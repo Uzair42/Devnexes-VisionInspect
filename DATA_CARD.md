@@ -34,4 +34,19 @@ Given the perfect class balance, the dataset will be partitioned using a standar
 - **Validation Set:** 15% (270 images; 45 per class)
 - **Test Set:** 15% (270 images; 45 per class)
 
-*Note: The split will be executed using `scikit-learn`'s `train_test_split` with a fixed random seed to ensure reproducibility.
+## 5. A Typical Dataset Analysis Checklist
+
+  | Analysis Item               | Example                              |
+| --------------------------- | ------------------------------------ |
+| Total images                | 8,700                                |
+| Number of classes           | 2                                    |
+| Class names                 | Crack, No Crack                      |
+| Images per class            | Crack: 4,500; No Crack: 4,200        |
+| Class percentages           | 51.7%, 48.3%                         |
+| Image formats               | JPG, PNG                             |
+| Minimum/maximum image size  | e.g., 224×224 to 1024×768 (optional) |
+| Duplicate images            | Check if any (optional)              |
+| Corrupted images            | Remove if found (optional)           |
+| Train/Test/Validation sizes | 73% / 17% / 10%                      |
+| Split strategy              | Stratified random split              |
+| Random seed                 | 42                                   |
