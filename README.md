@@ -21,9 +21,3 @@ This repository contains a computer-vision application designed to classify surf
 └── README.md
 ```
 
-# Set up backend environment
-```python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
-
