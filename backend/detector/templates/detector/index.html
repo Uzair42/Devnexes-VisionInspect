@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surface Defect Inspector</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Surface Inspector</h1>
+            <p>Advanced AI-driven defect classification for industrial surfaces.</p>
+        </header>
+
+        {% if not weights_loaded %}
+        <div class="alert warning">
+            <strong>Warning:</strong> No model weights found. Inference will not work until you download <code>model_weights.pth</code> from Kaggle and place it in the <code>backend/</code> directory.
+        </div>
+        {% endif %}
+
+        <main>
+            <form method="POST" enctype="multipart/form-data" class="upload-box" id="uploadForm">
+                {% csrf_token %}
+                <div class="drop-zone" id="dropZone">
+                    <span class="drop-zone__prompt">Drag & Drop an image here or Click to upload</span>
+                    <input type="file" name="image" id="fileInput" class="drop-zone__input" accept="image/*" required>
+                </div>
+                <button type="submit" class="btn-submit" id="submitBtn" disabled>Run Inspection</button>
+            </form>
+
+            {% if uploaded_file_url %}
+            <div class="result-section">
+                <h2>Inspection Result</h2>
+                <div class="image-preview">
+                    <img src="{{ uploaded_file_url }}" alt="Uploaded surface image">
+                </div>
+                <div class="result-card {% if 'Error' in result %}error{% else %}success{% endif %}">
+                    <h3>{{ result }}</h3>
+                </div>
+            </div>
+            {% endif %}
+        </main>
+    </div>
+
+    <script>
+        const dropZoneElement = document.getElementById("dropZone");
+        const inputElement = document.getElementById("fileInput");
+        const submitBtn = document.getElementById("submitBtn");
+
+        dropZoneElement.addEventListener("click", (e) => {
+            inputElement.click();
+        });
+
+        inputElement.addEventListener("change", (e) => {
+            if (inputElement.files.length) {
+                updateThumbnail(dropZoneElement, inputElement.files[0]);
+                submitBtn.disabled = false;
+            }
+        });
+
+        dropZoneElement.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            dropZoneElement.classList.add("drop-zone--over");
+        });
+
+        ["dragleave", "dragend"].forEach((type) => {
+            dropZoneElement.addEventListener(type, (e) => {
+                dropZoneElement.classList.remove("drop-zone--over");
+            });
+        });
+
+        dropZoneElement.addEventListener("drop", (e) => {
+            e.preventDefault();
+
+            if (e.dataTransfer.files.length) {
+                inputElement.files = e.dataTransfer.files;
+                updateThumbnail(dropZoneElement, e.dataTransfer.files[0]);
+                submitBtn.disabled = false;
+            }
+
+            dropZoneElement.classList.remove("drop-zone--over");
+        });
+
+        function updateThumbnail(dropZoneElement, file) {
+            let thumbnailElement = dropZoneElement.querySelector(".drop-zone__thumb");
+
+            if (dropZoneElement.querySelector(".drop-zone__prompt")) {
+                dropZoneElement.querySelector(".drop-zone__prompt").remove();
+            }
+
+            if (!thumbnailElement) {
+                thumbnailElement = document.createElement("div");
+                thumbnailElement.classList.add("drop-zone__thumb");
+                dropZoneElement.appendChild(thumbnailElement);
+            }
+
+            thumbnailElement.dataset.label = file.name;
+
+            if (file.type.startsWith("image/")) {
+                const reader = new FileReader();
+
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                    thumbnailElement.style.backgroundImage = `url('${reader.result}')`;
+                };
+            } else {
+                thumbnailElement.style.backgroundImage = null;
+            }
+        }
+    </script>
+</body>
+</html>
