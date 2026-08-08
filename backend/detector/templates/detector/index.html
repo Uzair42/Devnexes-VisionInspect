@@ -1,115 +1,149 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surface Defect Inspector</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>Surface Inspector</h1>
-            <p>Advanced AI-driven defect classification for industrial surfaces.</p>
-        </header>
+{% extends 'detector/base.html' %}
+{% load static %}
 
-        {% if not weights_loaded %}
-        <div class="alert warning">
-            <strong>Warning:</strong> No model weights found. Inference will not work until you download <code>model_weights.pth</code> from Kaggle and place it in the <code>backend/</code> directory.
-        </div>
-        {% endif %}
+{% block title %}Inspection Studio | VisionInspect{% endblock %}
 
-        <main>
-            <form method="POST" enctype="multipart/form-data" class="upload-box" id="uploadForm">
-                {% csrf_token %}
-                <div class="drop-zone" id="dropZone">
-                    <span class="drop-zone__prompt">Drag & Drop an image here or Click to upload</span>
-                    <input type="file" name="image" id="fileInput" class="drop-zone__input" accept="image/*" required>
-                </div>
-                <button type="submit" class="btn-submit" id="submitBtn" disabled>Run Inspection</button>
-            </form>
-
-            {% if uploaded_file_url %}
-            <div class="result-section">
-                <h2>Inspection Result</h2>
-                <div class="image-preview">
-                    <img src="{{ uploaded_file_url }}" alt="Uploaded surface image">
-                </div>
-                <div class="result-card {% if 'Error' in result %}error{% else %}success{% endif %}">
-                    <h3>{{ result }}</h3>
-                </div>
-            </div>
-            {% endif %}
-        </main>
+{% block content %}
+<div class="container mt-5 pt-5 pb-5">
+    
+    <div class="text-center mb-5 mt-4">
+        <h2 class="font-outfit text-white display-5 fw-bold">Inspection <span class="text-gradient">Studio</span></h2>
+        <p class="text-muted fs-5">Upload an image below to run the classification model.</p>
     </div>
 
-    <script>
-        const dropZoneElement = document.getElementById("dropZone");
-        const inputElement = document.getElementById("fileInput");
-        const submitBtn = document.getElementById("submitBtn");
+    {% if not weights_loaded %}
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-8">
+            <div class="alert custom-warning-alert d-flex align-items-center" role="alert">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-3" viewBox="0 0 16 16">
+                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                </svg>
+                <div>
+                    <strong>Action Required:</strong> Model weights missing. Please download <code>model_weights.pth</code> and place it in your <code>backend/</code> folder.
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 
-        dropZoneElement.addEventListener("click", (e) => {
-            inputElement.click();
-        });
+    <div class="row justify-content-center">
+        <!-- Upload Form -->
+        <div class="col-md-6 mb-4">
+            <div class="card glass-card border-0 p-4 h-100">
+                <form method="POST" enctype="multipart/form-data" id="uploadForm" class="d-flex flex-column h-100">
+                    {% csrf_token %}
+                    <div class="drop-zone flex-grow-1 d-flex flex-column align-items-center justify-content-center" id="dropZone">
+                        <div class="drop-zone__prompt text-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-cloud-arrow-up text-primary mb-3" viewBox="0 0 16 16">
+                              <path fill-rule="evenodd" d="M7.646 5.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708z"/>
+                              <path d="M4.406 3.342A5.53 5.53 0 0 1 8 2c2.69 0 4.923 2 5.166 4.579C14.758 6.804 16 8.137 16 9.773 16 11.569 14.502 13 12.687 13H3.781C1.708 13 0 11.366 0 9.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383m.653.757c-.757.653-1.153 1.44-1.153 2.056v.448l-.445.049C2.064 6.805 1 7.952 1 9.318 1 10.785 2.23 12 3.781 12h8.906C13.98 12 15 10.988 15 9.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 4.825 10.328 3 8 3a4.53 4.53 0 0 0-2.941 1.1z"/>
+                            </svg>
+                            <p class="mb-1 fw-bold fs-5 text-light">Drag & Drop Image</p>
+                            <span class="text-muted small">or click to browse</span>
+                        </div>
+                        <input type="file" name="image" id="fileInput" class="drop-zone__input" accept="image/*" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-glow w-100 mt-4 py-3 font-outfit fs-5" id="submitBtn" disabled>
+                        Analyze Image
+                    </button>
+                </form>
+            </div>
+        </div>
 
-        inputElement.addEventListener("change", (e) => {
-            if (inputElement.files.length) {
-                updateThumbnail(dropZoneElement, inputElement.files[0]);
-                submitBtn.disabled = false;
-            }
-        });
+        <!-- Result Card -->
+        {% if uploaded_file_url %}
+        <div class="col-md-6 mb-4">
+            <div class="card glass-card border-0 p-4 h-100 animate-fade-in">
+                <h4 class="font-outfit text-white mb-3">Analysis Result</h4>
+                <div class="image-preview-container flex-grow-1 d-flex align-items-center justify-content-center mb-3">
+                    <img src="{{ uploaded_file_url }}" alt="Uploaded surface" class="img-fluid rounded-3 shadow-lg object-fit-contain" style="max-height: 300px;">
+                </div>
+                
+                {% if 'Error' in result %}
+                    <div class="alert alert-danger custom-alert d-flex align-items-center" role="alert">
+                        {{ result }}
+                    </div>
+                {% elif 'Missing' in result or 'not found' in result or 'not installed' in result %}
+                    <div class="alert custom-warning-alert d-flex align-items-center" role="alert">
+                        {{ result }}
+                    </div>
+                {% else %}
+                    <div class="alert custom-success-alert d-flex justify-content-between align-items-center mb-0" role="alert">
+                        <span class="fs-5">{{ result }}</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                        </svg>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
 
-        dropZoneElement.addEventListener("dragover", (e) => {
-            e.preventDefault();
-            dropZoneElement.classList.add("drop-zone--over");
-        });
+{% block scripts %}
+<script>
+    const dropZoneElement = document.getElementById("dropZone");
+    const inputElement = document.getElementById("fileInput");
+    const submitBtn = document.getElementById("submitBtn");
 
-        ["dragleave", "dragend"].forEach((type) => {
-            dropZoneElement.addEventListener(type, (e) => {
-                dropZoneElement.classList.remove("drop-zone--over");
-            });
-        });
+    dropZoneElement.addEventListener("click", (e) => {
+        inputElement.click();
+    });
 
-        dropZoneElement.addEventListener("drop", (e) => {
-            e.preventDefault();
+    inputElement.addEventListener("change", (e) => {
+        if (inputElement.files.length) {
+            updateThumbnail(dropZoneElement, inputElement.files[0]);
+            submitBtn.disabled = false;
+        }
+    });
 
-            if (e.dataTransfer.files.length) {
-                inputElement.files = e.dataTransfer.files;
-                updateThumbnail(dropZoneElement, e.dataTransfer.files[0]);
-                submitBtn.disabled = false;
-            }
+    dropZoneElement.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropZoneElement.classList.add("drop-zone--over");
+    });
 
+    ["dragleave", "dragend"].forEach((type) => {
+        dropZoneElement.addEventListener(type, (e) => {
             dropZoneElement.classList.remove("drop-zone--over");
         });
+    });
 
-        function updateThumbnail(dropZoneElement, file) {
-            let thumbnailElement = dropZoneElement.querySelector(".drop-zone__thumb");
-
-            if (dropZoneElement.querySelector(".drop-zone__prompt")) {
-                dropZoneElement.querySelector(".drop-zone__prompt").remove();
-            }
-
-            if (!thumbnailElement) {
-                thumbnailElement = document.createElement("div");
-                thumbnailElement.classList.add("drop-zone__thumb");
-                dropZoneElement.appendChild(thumbnailElement);
-            }
-
-            thumbnailElement.dataset.label = file.name;
-
-            if (file.type.startsWith("image/")) {
-                const reader = new FileReader();
-
-                reader.readAsDataURL(file);
-                reader.onload = () => {
-                    thumbnailElement.style.backgroundImage = `url('${reader.result}')`;
-                };
-            } else {
-                thumbnailElement.style.backgroundImage = null;
-            }
+    dropZoneElement.addEventListener("drop", (e) => {
+        e.preventDefault();
+        if (e.dataTransfer.files.length) {
+            inputElement.files = e.dataTransfer.files;
+            updateThumbnail(dropZoneElement, e.dataTransfer.files[0]);
+            submitBtn.disabled = false;
         }
-    </script>
-</body>
-</html>
+        dropZoneElement.classList.remove("drop-zone--over");
+    });
+
+    function updateThumbnail(dropZoneElement, file) {
+        let thumbnailElement = dropZoneElement.querySelector(".drop-zone__thumb");
+
+        if (dropZoneElement.querySelector(".drop-zone__prompt")) {
+            dropZoneElement.querySelector(".drop-zone__prompt").style.display = "none";
+        }
+
+        if (!thumbnailElement) {
+            thumbnailElement = document.createElement("div");
+            thumbnailElement.classList.add("drop-zone__thumb");
+            dropZoneElement.appendChild(thumbnailElement);
+        }
+        
+        thumbnailElement.dataset.label = file.name;
+
+        if (file.type.startsWith("image/")) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                thumbnailElement.style.backgroundImage = `url('${reader.result}')`;
+            };
+        } else {
+            thumbnailElement.style.backgroundImage = null;
+        }
+    }
+</script>
+{% endblock %}

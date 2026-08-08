@@ -35,9 +35,13 @@ The `notebooks/` directory contains two scripts: `01_model_training.ipynb` and `
 Once you have trained the model and downloaded the weights:
 
 1. **Install Dependencies**:
-   Open a terminal in the root directory and install the required Python packages:
+   Open a terminal in the root directory. If you have an NVIDIA GPU, install the default packages:
    ```bash
    pip install django torch torchvision pillow
+   ```
+   **If your machine only has a CPU (no NVIDIA GPU)**, install the much smaller CPU-only version of PyTorch instead to save time and disk space:
+   ```bash
+   pip install torch torchvision pillow --index-url https://download.pytorch.org/whl/cpu
    ```
 
 2. **Add Model Weights**:

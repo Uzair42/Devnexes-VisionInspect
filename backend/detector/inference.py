@@ -28,7 +28,7 @@ def load_model():
     if not TORCH_AVAILABLE:
         return None, False
         
-    model = models.mobilenet_v2(pretrained=False)
+    model = models.mobilenet_v2(weights=None)
     model.classifier[1] = nn.Linear(model.last_channel, NUM_CLASSES)
     
     if os.path.exists(WEIGHTS_PATH):

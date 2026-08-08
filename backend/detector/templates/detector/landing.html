@@ -1,0 +1,70 @@
+{% extends 'detector/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section d-flex align-items-center justify-content-center text-center">
+    <div class="container position-relative z-1">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-8">
+                <span class="badge glass-badge mb-3 py-2 px-3 fs-6">v1.0 • PyTorch Powered</span>
+                <h1 class="display-3 fw-bolder font-outfit text-white mb-4">
+                    Industrial Surface <br/>
+                    <span class="text-gradient">Defect Classification</span>
+                </h1>
+                <p class="lead text-light mb-5 px-md-5 fs-4">
+                    Instantly analyze structural surfaces, magnetic tiles, and PCBs with advanced deep learning models running natively on your hardware.
+                </p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{% url 'inspect' %}" class="btn btn-primary btn-glow btn-lg px-5 font-outfit">Run Inspection Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Background abstract shapes -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section py-5">
+    <div class="container mt-5 mb-5">
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4">
+                <div class="card glass-card h-100 p-4 text-center border-0">
+                    <div class="feature-icon mb-4 mx-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-cpu text-primary" viewBox="0 0 16 16">
+                            <path d="M5 0a.5.5 0 0 1 .5.5V2h1V.5a.5.5 0 0 1 1 0V2h1V.5a.5.5 0 0 1 1 0V2h1V.5a.5.5 0 0 1 1 0V2A2.5 2.5 0 0 1 14 4.5h1.5a.5.5 0 0 1 0 1H14v1h1.5a.5.5 0 0 1 0 1H14v1h1.5a.5.5 0 0 1 0 1H14v1h1.5a.5.5 0 0 1 0 1H14a2.5 2.5 0 0 1-2.5 2.5v1.5a.5.5 0 0 1-1 0V14h-1v1.5a.5.5 0 0 1-1 0V14h-1v1.5a.5.5 0 0 1-1 0V14h-1v1.5a.5.5 0 0 1-1 0V14A2.5 2.5 0 0 1 2 11.5H.5a.5.5 0 0 1 0-1H2v-1H.5a.5.5 0 0 1 0-1H2v-1H.5a.5.5 0 0 1 0-1H2v-1H.5a.5.5 0 0 1 0-1H2A2.5 2.5 0 0 1 4.5 2V.5A.5.5 0 0 1 5 0m-.5 3A1.5 1.5 0 0 0 3 4.5v7A1.5 1.5 0 0 0 4.5 13h7a1.5 1.5 0 0 0 1.5-1.5v-7A1.5 1.5 0 0 0 11.5 3zM5 6.5A1.5 1.5 0 0 1 6.5 5h3A1.5 1.5 0 0 1 11 6.5v3A1.5 1.5 0 0 1 9.5 11h-3A1.5 1.5 0 0 1 5 9.5zM6.5 6a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5z"/>
+                        </svg>
+                    </div>
+                    <h4 class="font-outfit text-white">Edge AI Processing</h4>
+                    <p class="text-muted">Inference runs entirely on your local machine using a streamlined PyTorch engine, meaning zero external API latency.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card glass-card h-100 p-4 text-center border-0">
+                    <div class="feature-icon mb-4 mx-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-shield-check text-success" viewBox="0 0 16 16">
+                            <path d="M5.338 1.59a61 61 0 0 0-2.837.856.48.48 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.7 10.7 0 0 0 2.287 2.233c.346.244.652.42.893.533q.18.085.293.118a1 1 0 0 0 .746 0q.111-.032.293-.118c.241-.113.547-.29.893-.533a10.7 10.7 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.8 11.8 0 0 1-2.517 2.453 7 7 0 0 1-1.084.685C8.441 15.932 8.212 16 8 16s-.441-.068-.783-.242a7 7 0 0 1-1.084-.685 11.8 11.8 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 63 63 0 0 1 5.072.56"/>
+                            <path d="M10.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0"/>
+                        </svg>
+                    </div>
+                    <h4 class="font-outfit text-white">Multi-Domain Analysis</h4>
+                    <p class="text-muted">Capable of distinguishing cracks on varying textures including concrete bridges, steel, and electronic components.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card glass-card h-100 p-4 text-center border-0">
+                    <div class="feature-icon mb-4 mx-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-lightning-charge text-warning" viewBox="0 0 16 16">
+                            <path d="M11.251.068a.5.5 0 0 1 .227.58L9.677 6.5H13a.5.5 0 0 1 .364.843l-8 8.5a.5.5 0 0 1-.842-.49L6.323 9.5H3a.5.5 0 0 1-.364-.843l8-8.5a.5.5 0 0 1 .615-.09zM4.157 8.5H7a.5.5 0 0 1 .478.647L6.11 13.59l5.732-6.09H9a.5.5 0 0 1-.478-.647L9.89 2.41z"/>
+                        </svg>
+                    </div>
+                    <h4 class="font-outfit text-white">Transfer Learning</h4>
+                    <p class="text-muted">Built upon MobileNetV2 architecture, guaranteeing highly optimized parameter counts and extreme inference speed.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

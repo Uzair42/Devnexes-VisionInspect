@@ -3,6 +3,9 @@ from django.shortcuts import render
 from django.core.files.storage import FileSystemStorage
 from .inference import predict_image, weights_loaded
 
+def landing(request):
+    return render(request, 'detector/landing.html')
+
 def index(request):
     context = {
         'weights_loaded': weights_loaded
