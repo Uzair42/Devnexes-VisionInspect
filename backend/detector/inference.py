@@ -1,9 +1,15 @@
 import os
-import torch
-import torch.nn as nn
-from torchvision import models, transforms
 from PIL import Image
 from django.conf import settings
+
+try:
+    import torch
+    import torch.nn as nn
+    from torchvision import models, transforms
+    TORCH_AVAILABLE = True
+except ImportError:
+    TORCH_AVAILABLE = False
+    print("Warning: PyTorch is not installed. Inference will not work.")
 
 # Define the classes based on your dataset
 CLASSES = ['Bridge_Crack_Image', 'CrackForest', 'DeepPCB', 'Magnetic-Tile-Defect']
@@ -12,10 +18,16 @@ NUM_CLASSES = len(CLASSES)
 # Path where the downloaded weights should be placed
 WEIGHTS_PATH = os.path.join(settings.BASE_DIR, 'model_weights.pth')
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+if TORCH_AVAILABLE:
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+else:
+    device = None
 
 def load_model():
     """Load the model architecture and weights."""
+    if not TORCH_AVAILABLE:
+        return None, False
+        
     model = models.mobilenet_v2(pretrained=False)
     model.classifier[1] = nn.Linear(model.last_channel, NUM_CLASSES)
     
@@ -36,6 +48,9 @@ model_instance, weights_loaded = load_model()
 
 def predict_image(image_path):
     """Run inference on a single image."""
+    if not TORCH_AVAILABLE:
+        return "PyTorch is not installed. Please install 'torch' and 'torchvision'."
+        
     if not weights_loaded or model_instance is None:
         return "Model weights not found. Please place 'model_weights.pth' in the backend directory."
 
