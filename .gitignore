@@ -1,0 +1,7 @@
+__pycache__
+model_weights.pth
+.env
+venv
+.venv
+media
+.env
